@@ -1,0 +1,43 @@
+<html>
+  <meta charset="UTF-8" />
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script src="../lib/smartCode.js"></script>
+  <script>
+  $(function() {
+    $('code').smartCode({width: 400});
+  });
+  </script>
+  <pre style="background-color: #FF66FF; width: 400px;"><code>require 'sinatra'
+require 'nokogiri'
+require 'open-uri'
+
+memo = {}
+
+get '/:id/:size' do |id, size|
+  begin
+    if memo[id]
+      n, ext = memo[id]
+    else
+      n = Nokogiri::HTML(open("http://twitter.com/#{id}").read)
+      n = n.css('img').first
+      n = n['src'].to_s
+      puts n
+      ext = n.match(/(jpg|png|gif|jpeg)$/)
+      n = n.gsub(%r|(^.*)reasonably_small\....$|, '\1')
+      memo[id] = [n, ext]
+    end
+    n = "#{n}#{size}.#{ext}"
+    puts n
+    redirect n
+  rescue =&gt; e
+    p e
+    halt 404
+  end
+end
+  </code></pre>
+  <pre style="background-color: #FF66FF; width: 400px;"><code>&lt;html&gt;
+  hi!
+  こんにちは！こんにちは！こんにちは！こんにちは！こんにちは！こんにちは！
+  &amp;
+&lt;/html&gt;
+  </code></pre>
